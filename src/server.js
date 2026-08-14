@@ -32,4 +32,10 @@ app.get("/products", async (req, res) => {
     const products = await readProducts()
 
     res.json(products)
+})
+
+app.get("/products/:id", async (req, res) => {
+    const products = await readProducts()
+    const product = products.find(p => p.id === Number(req.params.id))
+    res.json(product)
 })  
