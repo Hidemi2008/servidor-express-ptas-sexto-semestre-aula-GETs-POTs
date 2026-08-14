@@ -6,6 +6,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const DB_PATH = join(__dirname, 'data.json')
 
+const DB_PRODUCTS = join(__dirname, "products.json")
+
 export async function readUsers() {
     try {
         const raw = await readFile(DB_PATH, "utf-8")
@@ -18,3 +20,14 @@ export async function readUsers() {
     }
 }
 
+export async function readProducts() {
+    try {
+        const raw = await readFile(DB_PRODUCTS, "utf-8")
+        return JSON.parse(raw)
+
+    } catch (err) {
+        if (err.code === "ENOENT") return []
+
+        throw err
+    }
+}

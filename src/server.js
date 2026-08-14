@@ -1,6 +1,6 @@
 import app from "./app.js"
 
-import {readUsers} from "./db.js"
+import { readProducts, readUsers } from "./db.js"
 
 import dotenv from "dotenv"
 
@@ -28,3 +28,8 @@ app.get('/users/:id', async (req, res) => {
     res.json(user)
 })
 
+app.get("/products", async (req, res) => {
+    const products = await readProducts()
+
+    res.json(products)
+})  
