@@ -34,8 +34,14 @@ app.get("/products", async (req, res) => {
     res.json(products)
 })
 
-app.get("/products/:id", async (req, res) => {
+app.get("/products/id/:id", async (req, res) => {
     const products = await readProducts()
     const product = products.find(p => p.id === Number(req.params.id))
+    res.json(product)
+})  
+
+app.get("/products/min/:min", async (req, res) => {
+    const products = await readProducts()
+    const product = products.filter(p => p.preco >= 10 )
     res.json(product)
 })  

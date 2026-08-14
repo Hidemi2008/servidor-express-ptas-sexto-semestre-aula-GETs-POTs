@@ -1,10 +1,17 @@
 [
     {
         "id": 1,
-        "nome": "Lavadeira"
+        "nome": "Lavadeira",
+        "preco": 2000.00
     },
     {
         "id": 2,
-        "nome": "TV"
+        "nome": "TV",
+        "preco": 1500.00
+    },
+        {
+        "id": 3,
+        "nome": "Prato",
+        "preco": 9.00
     }
 ]
