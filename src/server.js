@@ -15,10 +15,13 @@ app.get("/", async (req, res) => {
 })
 
 app.get("/users", async (req, res) => {
-    const users = await readUsers()
-
-    res.json(users)
-})
+    const { maior } = req.query;
+    let users = await readUsers();
+    if (maior) {
+        users = users.filter((u) => u.idade >= Number(maior));
+    }
+    res.json(users);
+});
 
 app.get('/users/:id', async (req, res) => {
     const users = await readUsers()
@@ -28,20 +31,26 @@ app.get('/users/:id', async (req, res) => {
     res.json(user)
 })
 
-app.get("/products", async (req, res) => {
-    const products = await readProducts()
 
-    res.json(products)
-})
 
-app.get("/products/id/:id", async (req, res) => {
+app.get("/products/:id", async (req, res) => {
     const products = await readProducts()
     const product = products.find(p => p.id === Number(req.params.id))
+    if (!product) {
+        return res.status(404).json({
+            status: 404,
+            message: "Produto não encontrado"
+        })
+    }
     res.json(product)
-})  
+}
+)
 
-app.get("/products/min/:min", async (req, res) => {
-    const products = await readProducts()
-    const product = products.filter(p => p.preco >= 10 )
-    res.json(product)
+app.get("/products", async (req, res) => {
+    let products = await readProducts()
+    const { min } = req.query
+    if (min) {
+        products = products.filter(p => p.preco >= parseFloat(min))
+    }
+    res.json(products)
 })  
