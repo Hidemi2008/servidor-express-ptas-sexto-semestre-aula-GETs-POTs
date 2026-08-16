@@ -1,6 +1,6 @@
 import app from "./app.js"
 
-import { readProducts, readUsers, writeUsers } from "./db.js"
+import { readProducts, readUsers, writeProducts, writeUsers } from "./db.js"
 
 import dotenv from "dotenv"
 
@@ -69,9 +69,37 @@ app.post('/users', async (req, res) => {
     const users = await readUsers()
     const novoId = users.length ? Math.max(...users.map(u => u.id)) + 1 : 1
 
+    users.map(u => {
+        if (u.email === email) {
+            res.status(409).json({ erro: 'email Duplicado' })
+        }
+    })
+
     const novo = { id: novoId, nome, email }
     users.push(novo)
     await writeUsers(users)
+
+    // 201 Created + recurso no body
+    res.status(201).json(novo)
+})
+
+app.post('/products', async (req, res) => {
+    const { nome, preco } = req.body || {}
+
+    // validação simples
+    if (!nome || typeof nome !== 'string') {
+        return res.status(400).json({ erro: 'nome é obrigatório' })
+    }
+    if (!preco || typeof preco !== 'number') {
+        return res.status(400).json({ erro: 'Preço inválido' })
+    }
+
+    const products = await readProducts()
+    const novoId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1
+
+    const novo = { id: novoId, nome, preco }
+    products.push(novo)
+    await writeProducts(products)
 
     // 201 Created + recurso no body
     res.status(201).json(novo)

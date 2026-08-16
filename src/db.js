@@ -35,3 +35,7 @@ export async function readProducts() {
 export async function writeUsers(users) {
     await writeFile(DB_PATH, JSON.stringify(users, null, 2), 'utf8')
 }
+
+export async function writeProducts(products) {
+    await writeFile(DB_PRODUCTS, JSON.stringify(products, null, 2), 'utf8')
+}
