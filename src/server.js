@@ -83,6 +83,43 @@ app.post('/users', async (req, res) => {
     res.status(201).json(novo)
 })
 
+app.post('/users/batch', async (req, res) => {
+    const novosUsuarios = req.body || []
+
+    if (!Array.isArray(novosUsuarios)) {
+        return res.status(400).json({ erro: 'esperado um array de usuários' })
+    }
+
+    for (const u of novosUsuarios) {
+        if (!u.nome || typeof u.nome !== 'string') {
+            return res.status(400).json({ erro: 'nome é obrigatório' })
+        }
+        if (!u.email || typeof u.email !== 'string' || !u.email.includes('@')) {
+            return res.status(400).json({ erro: 'email inválido' })
+        }
+    }
+
+    const usuariosExistentes = await readUsers()
+
+    for (const u of novosUsuarios) {
+        if (usuariosExistentes.some(e => e.email === u.email)) {
+            return res.status(409).json({ erro: `email duplicado: ${u.email}` })
+        }
+    }
+
+    let ultimoId = usuariosExistentes.length ? Math.max(...usuariosExistentes.map(u => u.id)) : 0
+    const inseridos = novosUsuarios.map(u => {
+        ultimoId++
+        return { id: ultimoId, nome: u.nome, email: u.email }
+    })
+
+    usuariosExistentes.push(...inseridos)
+    await writeUsers(usuariosExistentes)
+
+    res.status(201).json(inseridos)
+})
+
+
 app.post('/products', async (req, res) => {
     const { nome, preco } = req.body || {}
 
