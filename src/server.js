@@ -1,6 +1,6 @@
 import app from "./app.js"
 
-import { readProducts, readUsers } from "./db.js"
+import { readProducts, readUsers, writeUsers } from "./db.js"
 
 import dotenv from "dotenv"
 
@@ -53,4 +53,26 @@ app.get("/products", async (req, res) => {
         products = products.filter(p => p.preco >= parseFloat(min))
     }
     res.json(products)
-})  
+})
+
+app.post('/users', async (req, res) => {
+    const { nome, email } = req.body || {}
+
+    // validação simples
+    if (!nome || typeof nome !== 'string') {
+        return res.status(400).json({ erro: 'nome é obrigatório' })
+    }
+    if (!email || !email.includes('@')) {
+        return res.status(400).json({ erro: 'email inválido' })
+    }
+
+    const users = await readUsers()
+    const novoId = users.length ? Math.max(...users.map(u => u.id)) + 1 : 1
+
+    const novo = { id: novoId, nome, email }
+    users.push(novo)
+    await writeUsers(users)
+
+    // 201 Created + recurso no body
+    res.status(201).json(novo)
+})
