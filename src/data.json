@@ -33,5 +33,15 @@
     "id": 9,
     "nome": "teste",
     "email": "gabriel@gmail.com"
+  },
+  {
+    "id": 10,
+    "nome": "teste3",
+    "email": "gabriel2@gmail.com"
+  },
+  {
+    "id": 11,
+    "nome": "teste3",
+    "email": "gabriel3@gmail.com"
   }
 ]
