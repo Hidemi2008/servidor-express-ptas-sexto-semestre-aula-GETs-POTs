@@ -1,8 +1,8 @@
 [
   {
     "id": 1,
-    "nome": "Lavadeira",
-    "preco": 2000
+    "nome": "Mouse Gamer",
+    "preco": 149.9
   },
   {
     "id": 2,
@@ -36,7 +36,7 @@
   },
   {
     "id": 8,
-    "nome": "teste",
-    "preco": 10.5
+    "nome": "Mouse Gamer",
+    "preco": 149.9
   }
 ]

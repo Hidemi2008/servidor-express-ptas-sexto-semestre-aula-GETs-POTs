@@ -137,3 +137,32 @@ app.post('/products', async (req, res) => {
     // 201 Created + recurso no body
     res.status(201).json(novo)
 })
+
+app.put("/products/:id", async (req, res) => {
+    let { nome, preco } = req.body || []
+
+    if (nome === "") {
+        res.status(400).json({ erro: 'nome é obrigatório' })
+    }
+    if (!preco > 0) {
+        console.log(preco)
+        res.status(400).json({ erro: 'Preço precisa ser maior do que zero' })
+    }
+
+    let produtos = await readProducts()
+
+    const id = Number(req.params.id)
+
+    const indexProduto = produtos.findIndex((produto) => produto.id === id)
+
+    if (indexProduto === -1) {
+        return res.status(404).json({ erro: 'Produto não existe' })
+    }
+
+    produtos[indexProduto] = { id, nome, preco }
+
+    await writeProducts(produtos)
+
+    return res.status(200).json(produtos[indexProduto])
+
+})
