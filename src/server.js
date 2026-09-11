@@ -55,16 +55,15 @@ app.get("/products", async (req, res) => {
     res.json(products)
 })
 
-app.post('/users', async (req, res) => {
-    const { nome, email } = req.body || {}
+function validateUserPayload(body) {
+    const { nome, email } = body || {}
+    if (!nome) return { ok: false, erro: 'nome é obrigatório' }
+    if (!email || !email.includes('@')) return { ok: false, erro: 'email inválido' }
+    return { ok: true, data: { nome, email } }
+}
 
-    // validação simples
-    if (!nome || typeof nome !== 'string') {
-        return res.status(400).json({ erro: 'nome é obrigatório' })
-    }
-    if (!email || !email.includes('@')) {
-        return res.status(400).json({ erro: 'email inválido' })
-    }
+app.post('/users', async (req, res) => {
+    const { nome, email } = validateUserPayload(req.body).data
 
     const users = await readUsers()
     const novoId = users.length ? Math.max(...users.map(u => u.id)) + 1 : 1
