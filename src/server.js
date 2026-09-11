@@ -168,7 +168,8 @@ app.put("/products/:id", async (req, res) => {
 })
 
 app.patch("/products/:id", async (req, res) => {
-    const { nome, preco } = req.body || {}
+    const { id: _, createdAt: __, updatedAt: ___, ...dados } = req.body || {}
+    const { nome, preco } = dados
 
     // validações apenas para os campos que foram enviados
     if (nome !== undefined && (typeof nome !== 'string' || nome.trim() === "")) {
@@ -186,11 +187,12 @@ app.patch("/products/:id", async (req, res) => {
         return res.status(404).json({ erro: 'Produto não existe' })
     }
 
-    // merge: só sobrescreve o que veio no body
+    // merge: só sobrescreve o que veio no body (exceto id/createdAt/updatedAt)
     produtos[indexProduto] = {
         ...produtos[indexProduto],
         ...(nome !== undefined && { nome }),
         ...(preco !== undefined && { preco }),
+        updatedAt: new Date().toISOString(),
     }
 
     await writeProducts(produtos)
