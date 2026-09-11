@@ -166,3 +166,34 @@ app.put("/products/:id", async (req, res) => {
     return res.status(200).json(produtos[indexProduto])
 
 })
+
+app.patch("/products/:id", async (req, res) => {
+    const { nome, preco } = req.body || {}
+
+    // validações apenas para os campos que foram enviados
+    if (nome !== undefined && (typeof nome !== 'string' || nome.trim() === "")) {
+        return res.status(400).json({ erro: 'nome inválido' })
+    }
+    if (preco !== undefined && (typeof preco !== 'number' || preco <= 0)) {
+        return res.status(400).json({ erro: 'preco precisa ser um número maior do que zero' })
+    }
+
+    const produtos = await readProducts()
+    const id = Number(req.params.id)
+    const indexProduto = produtos.findIndex((produto) => produto.id === id)
+
+    if (indexProduto === -1) {
+        return res.status(404).json({ erro: 'Produto não existe' })
+    }
+
+    // merge: só sobrescreve o que veio no body
+    produtos[indexProduto] = {
+        ...produtos[indexProduto],
+        ...(nome !== undefined && { nome }),
+        ...(preco !== undefined && { preco }),
+    }
+
+    await writeProducts(produtos)
+
+    return res.status(200).json(produtos[indexProduto])
+})
