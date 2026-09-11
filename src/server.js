@@ -88,12 +88,12 @@ app.post('/users/batch', async (req, res) => {
 
     const users = readUsers()
 
-    let biggestId = users.length ? Math.max(...users.map((u) => u.id)) : 1
+    let biggestId = users.length ? Math.max(...users.map((user) => user.id)) : 1
 
     const validUsers = usersBody
-        .filter((u) => u.nome && typeof u.nome === "string" && u.email && u.email.includes("@"))
-        .map((u) => ({
-            ...u,
+        .filter((user) => user.nome && typeof user.nome === "string" && user.email && user.email.includes("@"))
+        .map((user) => ({
+            ...user,
             id: ++biggestId
         }))
 
